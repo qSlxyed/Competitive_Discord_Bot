@@ -86,9 +86,9 @@ async def start_game():
     await picking_phase(game_channel)
 
 async def picking_phase(game_channel: discord.TextChannel):
-    # Implement picking phase
+    # * picking phase
     # Choose captains, let them pick players, etc.
-    # Placeholder for picking phase
+    # Place for picking phase
     await game_channel.send("Picking phase has started.")
 
 @bot.command(name='queue')
@@ -107,7 +107,7 @@ async def start_game_command(ctx):
     await ctx.send("Click the button to start the game.", view=view)
 
 @bot.command(name='score')
-@commands.has_role('Admin')  # Replace with appropriate role check
+@commands.has_role('Admin')  # Replace with  role check
 async def score(ctx, game_id: int):
     if game_id not in active_games:
         await ctx.send("Invalid game ID.")
@@ -120,16 +120,16 @@ async def score(ctx, game_id: int):
 
     # Process the score
     file = ctx.message.attachments[0]
-    # Here you would process the score file and update Elo ratings
-    # Placeholder for Elo calculation
-    # Update the Elo ratings based on the game result
+    # Here dis would process the score file and update Elo ratings
+    # * for Elo calculation
+    # Updatesssss the Elo ratings based on the game result
 
     # Lock game channel
     game_channel = discord.utils.get(ctx.guild.text_channels, name=GAME_CHANNEL_NAME)
     if game_channel:
         await game_channel.set_permissions(ctx.guild.default_role, send_messages=False)
 
-    # Finalize the game
+    # Final process the game
     await finalize_game(game_id)
 
 async def finalize_game(game_id: int):
