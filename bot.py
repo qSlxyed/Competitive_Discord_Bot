@@ -51,7 +51,7 @@ class StartGameButton(Button):
         await start_game()
 
 async def start_game():
-    guild = bot.get_guild(GUILD_ID)  # Replace with your guild ID
+    guild = bot.get_guild(GUILD_ID)  # Replace with ur guild / ur discord server ID
     channel = bot.get_channel(QUEUE_CHANNEL_ID)
     global queue
 
