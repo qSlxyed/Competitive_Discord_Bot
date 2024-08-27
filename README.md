@@ -1,1 +1,1 @@
-it doesnt work lOL
+Fixed version and a tutorial soon
