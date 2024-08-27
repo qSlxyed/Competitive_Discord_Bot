@@ -4,14 +4,14 @@ from discord.ui import Button, View
 import asyncio
 from typing import List, Dict
 
-# Define constants
-QUEUE_CHANNEL_ID = 1275349042750033940
+# u can edit this
+QUEUE_CHANNEL_ID = ID
 VOICE_CHANNEL_LIMIT = 4
 GAME_CHANNEL_NAME = "game-channel"
 ELO_WIN = 35
 ELO_LOSS = -5
 
-# Global data structures
+# Structure
 queue: List[discord.Member] = []
 active_games: Dict[int, Dict[str, List[discord.Member]]] = {}  # Game ID -> {'team1': [], 'team2': []}
 elo_ratings: Dict[int, int] = {}  # player_id -> elo_rating
@@ -23,7 +23,7 @@ class QueueButton(Button):
     async def callback(self, interaction: discord.Interaction):
         member = interaction.user
 
-        # Check if the member is in a voice channel
+        # member checking
         if not member.voice or not member.voice.channel:
             await interaction.response.send_message("You need to be in a voice channel to join the queue.", ephemeral=True)
             return
@@ -33,7 +33,7 @@ class QueueButton(Button):
             await interaction.response.send_message("You are already in the queue.", ephemeral=True)
             return
 
-        # Add member to the queue
+        # meadd member to q
         queue.append(member)
         await interaction.response.send_message(f"{member.mention} has joined the queue.", ephemeral=True)
 
@@ -46,7 +46,7 @@ class StartGameButton(Button):
             await interaction.response.send_message("Not enough players in the queue.", ephemeral=True)
             return
 
-        # Start the game
+        # Starts the game
         await interaction.response.send_message("Starting the game...", ephemeral=True)
         await start_game()
 
@@ -55,15 +55,14 @@ async def start_game():
     channel = bot.get_channel(QUEUE_CHANNEL_ID)
     global queue
 
-    # Create voice channels
+    # Create game vc
     voice_channels = [await guild.create_voice_channel(f"{GAME_CHANNEL_NAME}-{i}") for i in range(2)]
     game_channel = await guild.create_text_channel(GAME_CHANNEL_NAME)
 
-    # Split the queue into two teams
     team1 = queue[:4]
     team2 = queue[4:]
 
-    # Assign permissions
+    # pperms
     for team in [team1, team2]:
         for member in team:
             for vc in voice_channels:
@@ -74,21 +73,21 @@ async def start_game():
     game_id = len(active_games) + 1
     active_games[game_id] = {'team1': team1, 'team2': team2}
 
-    # Inform players
+    # ping
     for team, members in [('Team 1', team1), ('Team 2', team2)]:
         member_mentions = ' '.join(member.mention for member in members)
         await game_channel.send(f"{team}: {member_mentions}")
 
-    # Clean up queue
+    # +
     queue = []
 
-    # Create picking phase
+    # picking
     await picking_phase(game_channel)
 
 async def picking_phase(game_channel: discord.TextChannel):
     # * picking phase
     # Choose captains, let them pick players, etc.
-    # Place for picking phase
+    # +
     await game_channel.send("Picking phase has started.")
 
 @bot.command(name='queue')
@@ -107,7 +106,7 @@ async def start_game_command(ctx):
     await ctx.send("Click the button to start the game.", view=view)
 
 @bot.command(name='score')
-@commands.has_role('Admin')  # Replace with  role check
+@commands.has_role('Admin')  # replace  it to ur own
 async def score(ctx, game_id: int):
     if game_id not in active_games:
         await ctx.send("Invalid game ID.")
@@ -118,13 +117,13 @@ async def score(ctx, game_id: int):
         await ctx.send("Please attach the score file.")
         return
 
-    # Process the score
+    # Processess the score
     file = ctx.message.attachments[0]
     # Here dis would process the score file and update Elo ratings
     # * for Elo calculation
-    # Updatesssss the Elo ratings based on the game result
+    # +
 
-    # Lock game channel
+    # Locks game channel
     game_channel = discord.utils.get(ctx.guild.text_channels, name=GAME_CHANNEL_NAME)
     if game_channel:
         await game_channel.set_permissions(ctx.guild.default_role, send_messages=False)
@@ -140,7 +139,7 @@ async def finalize_game(game_id: int):
     team1, team2 = game_data['team1'], game_data['team2']
 
     # Calculate Elo changes and notify teams
-    # Placeholder for Elo calculation
+    # ELO
     await bot.get_channel(QUEUE_CHANNEL_ID).send("Game finalized. Elo ratings updated.")
 
 @bot.command(name='i')
@@ -148,7 +147,7 @@ async def info_command(ctx, member: discord.Member = None):
     if member is None:
         member = ctx.author
 
-    elo = elo_ratings.get(member.id, 1000)  # Default Elo rating if not found
+    elo = elo_ratings.get(member.id, 1000)  # elo is default if there is none
     await ctx.send(f"{member.mention} has an Elo rating of {elo}.")
 
 bot.run('set ur discord token here')
